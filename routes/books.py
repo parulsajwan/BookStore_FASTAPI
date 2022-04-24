@@ -1,13 +1,16 @@
-from fastapi import Depends, APIRouter,File,UploadFile
-from database_config import SessionLocal,engine
-from starlette.status import HTTP_200_OK,HTTP_201_CREATED,HTTP_404_NOT_FOUND
-import models.books as book
-from sqlalchemy.orm import Session
 import shutil
+from fastapi_redis_cache import cache
+from fastapi.encoders import jsonable_encoder
+from fastapi import Depends, APIRouter, File, UploadFile
+from database_config import SessionLocal, engine
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
+from sqlalchemy.orm import Session
+import models.books as book
 
 
 bookrouter = APIRouter()
 book.Base.metadata.create_all(engine)
+
 
 def get_db():
     try:
@@ -16,8 +19,9 @@ def get_db():
     finally:
         db.close()
 
+
 @bookrouter.post("/create", status_code=HTTP_201_CREATED)
-async def add_book(id:int, book_name:str, description:str,image_link:UploadFile = File(...),
+async def add_book(id: int, book_name: str, description: str, image_link: UploadFile = File(...),
                    db: Session = Depends(get_db)):
     try:
         add_book = book.Books()
@@ -25,25 +29,29 @@ async def add_book(id:int, book_name:str, description:str,image_link:UploadFile 
         add_book.book_name = book_name
         add_book.description = description
         with open("media/"+image_link.filename, "wb") as image:
-            shutil.copyfileobj(image_link.file,image)
+            shutil.copyfileobj(image_link.file, image)
 
         add_book.image_link = str("media/"+image_link.filename)
         db.add(add_book)
         db.commit()
         return ("Book has been Created")
     except Exception as e:
-        return("Error:",e)
+        return("Error:", e)
+
 
 @bookrouter.get("/", status_code=HTTP_200_OK)
+@cache(expire=3600)
 async def get_all_books(db: Session = Depends(get_db)):
     try:
         data = db.query(book.Books).all()
-        return data
+        return jsonable_encoder(data)
     except Exception as e:
-        return("Error:",e)
+        return("Error:", e)
 
-@bookrouter.get("/{id}",status_code=HTTP_200_OK)
-async def get_book_by_id(id:int,db: Session = Depends(get_db)):
+
+@cache(expire=3600)
+@bookrouter.get("/{id}", status_code=HTTP_200_OK)
+async def get_book_by_id(id: int, db: Session = Depends(get_db)):
     try:
         data = db.query(book.Books).filter(book.Books.id == id).first()
         if data:

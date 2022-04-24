@@ -1,9 +1,9 @@
+from db_object import db
 import os.path
 import sys
 
-from models.favouritebooks import FavouriteBooks
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from db_object import db
+
 
 async def execute(query, is_many, values=None):
 
@@ -42,12 +42,13 @@ async def update_favourite_books(customer_id, book_list):
     values = {"favourite_books_list": book_list, "customer_id": customer_id}
     await execute(query, False, values)
 
-    
+
 async def db_get_favouritebook_from_id(customer_id):
     query = "select * from LikedBooks where customer_id=:customer_id"
     values = {"customer_id": customer_id}
     author = await fetch(query, True, values)
     return author
+
 
 async def create_favourite_books(customer_id, book_list):
     query = 'Insert into "FavouriteBooks"(customer_id,favourite_books_list) values(customer_id=:customer_id,favourite_books_list=:"favourite_books_list")'

@@ -1,7 +1,5 @@
-from msilib import schema
 from database_config import Base
-from sqlalchemy import String,Integer,Column,ForeignKey
-from sqlalchemy_utils import EmailType
+from sqlalchemy import String, Integer, Column, ForeignKey
 
 
 class FavouriteBooks(Base):

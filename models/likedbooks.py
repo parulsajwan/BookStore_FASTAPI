@@ -1,5 +1,5 @@
 from database_config import Base
-from sqlalchemy import Column,ForeignKey,Table,Integer
+from sqlalchemy import Column,ForeignKey,Integer
 
 
 class LikedBooks(Base):

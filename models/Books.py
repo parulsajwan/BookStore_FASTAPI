@@ -1,6 +1,7 @@
 from database_config import Base
 from sqlalchemy import String,Integer,Column,Text
 from sqlalchemy_utils import URLType
+from sqlalchemy.orm import relationship
 
 class Books(Base):
     __tablename__= 'Books'
@@ -8,6 +9,5 @@ class Books(Base):
     book_name = Column(String(255),nullable=False)
     description = Column(Text())
     image_link = Column(URLType)
-    
-    def __repr__(self):
-        return self.book_name
+    customers = relationship("Customer", secondary="LikedBooks", back_populates='books')
+

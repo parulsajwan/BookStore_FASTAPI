@@ -28,15 +28,14 @@ async def get_customer_by_id(id:int,db: Session = Depends(get_db)):
     return {'status', HTTP_404_NOT_FOUND}
 
 data = []
-single_data = {}
 @favoritebookrouter.get("/count/", status_code=HTTP_200_OK)
 async def get_all_favourite_books_count(db: Session = Depends(get_db)):
     query = db.query(favouritebook.FavouriteBooks).all()
-    # for i in data:
-    #     # count = len(i.favourite_books_list.split(','))
-    #     # customer = i.customer_id
-    #     # single_data['favourite_books_list'] = count
-    #     # single_data['customer_id'] = customer
-    #     # data.append(single_data)
-    #     data.append(i)
-    return query
+    for val in query:
+        single_dict = {}
+        count = len(val.favourite_books_list.split(','))
+        customer = val.customer_id
+        single_dict['favourite_books_list'] = count
+        single_dict['customer_id'] = customer
+        data.append(single_dict)
+    return data

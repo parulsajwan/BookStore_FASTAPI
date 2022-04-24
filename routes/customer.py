@@ -36,8 +36,7 @@ async def create_customers(id: int, name: str, email: EmailStr, password: str,
         create_customer.email = email
         hash_password = get_password_hash(password)
         create_customer.password = hash_password
-        data = db.query(custom.Customer).filter(
-            custom.Customer.email == email).first()
+        data = db.query(custom.Customer).filter(custom.Customer.email == email).first()
         if data:
             return("Data already exists")
         else:
@@ -62,7 +61,7 @@ async def get_customer_by_id(id: int, db: Session = Depends(get_db)):
     return ('status', HTTP_404_NOT_FOUND)
 
 
-@customerrouter.get("/bookcount/", response_model=List[BookSchema])
+@customerrouter.get("/booksdetail/", response_model=List[BookSchema])
 async def get_books(db: Session = Depends(get_db)):
     db_books = db.query(custom.Customer).options(
         joinedload(custom.Customer.books)).all()

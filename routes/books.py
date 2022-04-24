@@ -36,7 +36,7 @@ async def add_book(id: int, book_name: str, description: str, image_link: Upload
         db.commit()
         return ("Book has been Created")
     except Exception as e:
-        return("Error:", e)
+        return("Error:", str(e))
 
 
 @bookrouter.get("/", status_code=HTTP_200_OK)
@@ -46,7 +46,7 @@ async def get_all_books(db: Session = Depends(get_db)):
         data = db.query(book.Books).all()
         return jsonable_encoder(data)
     except Exception as e:
-        return("Error:", e)
+        return("Error:", str(e))
 
 
 @cache(expire=3600)
@@ -59,4 +59,4 @@ async def get_book_by_id(id: int, db: Session = Depends(get_db)):
         else:
             return {'status', HTTP_404_NOT_FOUND}
     except Exception as e:
-        return("Error:", e)
+        return("Error:", str(e))

@@ -40,7 +40,7 @@ async def get_all_favourite_books_count(db: Session = Depends(get_db)):
         single_dict = {}
         count = len(val.favourite_books_list.split(','))
         customer = val.customer_id
-        single_dict['favourite_books_list'] = count
+        single_dict['favourite_books_count'] = count
         single_dict['customer_id'] = customer
         data.append(single_dict)
     return data

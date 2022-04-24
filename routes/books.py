@@ -1,8 +1,6 @@
 from fastapi import Depends, APIRouter,File,UploadFile
 from database_config import SessionLocal,engine
 from starlette.status import HTTP_200_OK,HTTP_201_CREATED,HTTP_404_NOT_FOUND
-from typing import List
-from pydantic import BaseModel
 import models.books as book
 from sqlalchemy.orm import Session
 import shutil
@@ -10,13 +8,6 @@ import shutil
 
 bookrouter = APIRouter()
 book.Base.metadata.create_all(engine)
-class CreateBook(BaseModel):
-    id : int
-    book_name : str
-    description : str
-    image_link :str
-    class Config:
-        orm_mode = True
 
 def get_db():
     try:
